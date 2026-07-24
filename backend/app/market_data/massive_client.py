@@ -62,7 +62,7 @@ class MassiveProvider:
     def _parse(self, item) -> PriceTick | None:
         """item is one entry from get_snapshot_all's result list (an SDK
         TickerSnapshot object). A bad/delisted ticker is simply absent from
-        the response (MASSIVE_API.md §10), never passed here."""
+        the response (MARKET_DATA_SUMMARY.md §3), never passed here."""
         if item.ticker is None:
             return None
 
