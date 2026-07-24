@@ -4,7 +4,7 @@ import math
 import pytest
 
 from app.market_data.cache import PriceCache
-from app.market_data.seed_prices import DEFAULT_SEED, SEED_PRICES
+from app.market_data.seed_prices import SEED_PRICES
 from app.market_data.simulator import SimulatorProvider
 
 
@@ -89,7 +89,8 @@ async def test_previous_price_reflects_prior_tick_not_seed_every_time():
     await asyncio.sleep(1.1)  # at least two ticks
     await provider.stop()
     tick = cache.get("AAPL")
-    assert tick.previous_price != SEED_PRICES["AAPL"].price or tick.price == SEED_PRICES["AAPL"].price
+    seed_price = SEED_PRICES["AAPL"].price
+    assert tick.previous_price != seed_price or tick.price == seed_price
 
 
 def test_same_group_tickers_correlate_more_than_cross_group():
@@ -102,8 +103,8 @@ def test_same_group_tickers_correlate_more_than_cross_group():
     import statistics
 
     from app.market_data.gbm import correlated_z, dt_for_interval, step
-    from app.market_data.simulator import GROUP_CORRELATION
     from app.market_data.seed_prices import SEED_PRICES
+    from app.market_data.simulator import GROUP_CORRELATION
 
     rng = random.Random(99)
     dt = dt_for_interval(0.5)

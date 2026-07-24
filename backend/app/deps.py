@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import aiosqlite
 from fastapi import Request
 
 from .market_data.cache import PriceCache
@@ -12,3 +13,7 @@ def get_cache(request: Request) -> PriceCache:
 
 def get_registry(request: Request) -> TrackedTickerRegistry:
     return request.app.state.registry
+
+
+def get_db(request: Request) -> aiosqlite.Connection:
+    return request.app.state.db

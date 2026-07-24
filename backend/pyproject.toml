@@ -7,6 +7,7 @@ dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.32.0",
     "massive>=1.0.0",
+    "aiosqlite>=0.20.0",
 ]
 
 [dependency-groups]
@@ -15,11 +16,23 @@ dev = [
     "pytest-asyncio>=0.24.0",
     "pytest-timeout>=2.3.0",
     "httpx>=0.27.0",
+    "ruff>=0.8.0",
 ]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = [
+    "B008",  # Depends(...) in defaults is the standard FastAPI pattern
+    "UP017", # datetime.UTC alias vs timezone.utc -- purely cosmetic, not worth the churn
+]
 
 [build-system]
 requires = ["hatchling"]

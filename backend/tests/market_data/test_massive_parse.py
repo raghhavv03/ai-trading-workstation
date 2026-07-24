@@ -98,7 +98,8 @@ async def test_poll_once_skips_unparseable_items(monkeypatch):
     provider = MassiveProvider(api_key="test", cache=cache)
 
     canned = [
-        make_snapshot_item("AAPL", day_close=None, prev_close=None, last_trade_price=None),  # unparseable
+        # unparseable: no day close, no prev close, no last trade
+        make_snapshot_item("AAPL", day_close=None, prev_close=None, last_trade_price=None),
         make_snapshot_item("TSLA", day_close=250.0, prev_close=248.0),
     ]
     monkeypatch.setattr(provider._client, "get_snapshot_all", lambda *a, **k: canned)
@@ -121,7 +122,9 @@ async def test_poll_loop_survives_a_raising_cycle_and_keeps_polling(monkeypatch)
         if calls["n"] == 1:
             raise RuntimeError("simulated transient network error")
         await cache.update(
-            PriceTick("AAPL", price=100.0, previous_price=99.0, timestamp=datetime.now(timezone.utc))
+            PriceTick(
+                "AAPL", price=100.0, previous_price=99.0, timestamp=datetime.now(timezone.utc)
+            )
         )
 
     monkeypatch.setattr(provider, "_poll_once", flaky_poll_once)
