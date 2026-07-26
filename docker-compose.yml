@@ -1,0 +1,11 @@
+services:
+  finally:
+    build: .
+    ports: ["8000:8000"]
+    volumes: ["finally-data:/app/db"]
+    env_file: .env
+    # Docker Desktop resolves host.docker.internal natively; Linux needs this
+    # mapping for OLLAMA_BASE_URL to reach Ollama on the host.
+    extra_hosts: ["host.docker.internal:host-gateway"]
+volumes:
+  finally-data:

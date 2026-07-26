@@ -1,0 +1,56 @@
+# E2E harness (PLAN.md §12): the production app image plus a separate Playwright
+# container, so browser dependencies never land in the shipped image.
+#
+#   docker compose -f test/docker-compose.test.yml up --build \
+#     --abort-on-container-exit --exit-code-from playwright
+name: finally-e2e
+
+services:
+  app:
+    # Same build as the root docker-compose.yml — the image under test is the
+    # image that ships, not a test-only variant.
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      # Deterministic and offline: no live Ollama, no Massive API key, so the
+      # market simulator and the mock LLM drive every run.
+      LLM_MOCK: "true"
+      MASSIVE_API_KEY: ""
+      DB_PATH: /app/db/finally.db
+    # tmpfs rather than a named volume: every run starts from a genuinely fresh
+    # database, so the "fresh start" scenario tests what it claims to.
+    tmpfs:
+      - /app/db
+    healthcheck:
+      # The runtime image has no curl; python is guaranteed to be there.
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health', timeout=3)",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
+  playwright:
+    # Must track the @playwright/test version in package.json: the image ships
+    # only the browser builds its own Playwright release expects.
+    image: mcr.microsoft.com/playwright:v1.61.1-noble
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      E2E_BASE_URL: http://app:8000
+      CI: "true"
+    volumes:
+      - ./:/e2e
+      # Keep the host's macOS/arm node_modules out of the linux container.
+      - /e2e/node_modules
+    working_dir: /e2e
+    # The image ships the browsers for its own Playwright version, which is
+    # pinned to match package.json — so only the npm package needs installing.
+    command: sh -c "npm ci --no-audit --no-fund && npx playwright test"
