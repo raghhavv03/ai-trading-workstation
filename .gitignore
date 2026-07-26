@@ -1,33 +1,79 @@
-# OS
+# Operating System Files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
 
-# Python
+# Python / Virtual Environments
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
 .venv/
+venv/
+env/
+ENV/
 *.egg-info/
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.nox/
+.tox/
 
-# Node / Next.js
+# Node / Next.js / Frontend
 node_modules/
+frontend/node_modules/
 .next/
+frontend/.next/
 out/
 frontend/out/
+*.tsbuildinfo
+frontend/tsconfig.tsbuildinfo
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+coverage/
+frontend/coverage/
 
-# Env
+# Environment Variables & Secrets
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
 
-# SQLite runtime data
+# SQLite Runtime Data & Databases
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
 db/*.db
 db/*.db-journal
 backend/data/*.db
 backend/data/*.db-journal
 
-# Claude local settings
-.claude/settings.local.json
+# IDE & Editor Settings
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-project
+*.sublime-workspace
+.history/
 
-# Playwright MCP browser-session snapshots/screenshots
+# Tooling & Agent Artifacts
+.claude/
 .playwright-mcp/
