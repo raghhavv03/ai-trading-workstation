@@ -89,14 +89,14 @@ describe('ChatPanel', () => {
 
   it('disables the input and send button while pending', () => {
     setup({ pending: true, messages: [] });
-    expect(screen.getByLabelText('Message FinAlly')).toBeDisabled();
+    expect(screen.getByLabelText('Message TradeAlly')).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Send' })).toBeDisabled();
   });
 
   it('sends the drafted message and clears the field', async () => {
     const user = userEvent.setup();
     const props = setup();
-    const input = screen.getByLabelText('Message FinAlly') as HTMLInputElement;
+    const input = screen.getByLabelText('Message TradeAlly') as HTMLInputElement;
 
     await user.type(input, 'how is my portfolio?');
     await user.click(screen.getByRole('button', { name: 'Send' }));
@@ -107,14 +107,14 @@ describe('ChatPanel', () => {
 
   it('shows a prompt hint when the conversation is empty', () => {
     setup({ messages: [] });
-    expect(screen.getByText(/ask finally about your portfolio/i)).toBeInTheDocument();
+    expect(screen.getByText(/ask tradeally about your portfolio/i)).toBeInTheDocument();
   });
 
   it('collapses to a rail that can be reopened', async () => {
     const user = userEvent.setup();
     const props = setup({ collapsed: true });
 
-    expect(screen.queryByLabelText('Message FinAlly')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Message TradeAlly')).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Open AI assistant' }));
 
     expect(props.onToggle).toHaveBeenCalled();

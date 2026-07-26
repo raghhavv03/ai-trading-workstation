@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'FinAlly — AI Trading Workstation',
+  title: 'TradeAlly — AI Trading Workstation',
   description: 'Live market data, simulated portfolio, and an AI trading copilot.',
 };
 

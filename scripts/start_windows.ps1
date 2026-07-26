@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Start FinAlly (Windows). Safe to run repeatedly.
+    Start TradeAlly (Windows). Safe to run repeatedly.
 .EXAMPLE
     .\scripts\start_windows.ps1            # build if needed, start, open browser
     .\scripts\start_windows.ps1 -Build     # force a rebuild first
@@ -26,9 +26,9 @@ if (-not (Test-Path ".env")) {
     Copy-Item ".env.example" ".env"
 }
 
-$existingImage = docker compose images -q finally 2>$null
+$existingImage = docker compose images -q tradeally 2>$null
 if ($Build -or [string]::IsNullOrWhiteSpace($existingImage)) {
-    Write-Host "Building the FinAlly image..."
+    Write-Host "Building the TradeAlly image..."
     docker compose build
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
@@ -38,7 +38,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $url = "http://localhost:8000"
 Write-Host ""
-Write-Host "FinAlly is starting at $url"
+Write-Host "TradeAlly is starting at $url"
 Write-Host "  logs:  docker compose logs -f"
 Write-Host "  stop:  .\scripts\stop_windows.ps1"
 

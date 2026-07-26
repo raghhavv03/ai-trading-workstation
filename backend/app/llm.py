@@ -13,7 +13,7 @@ HEALTH_CHECK_TIMEOUT_SECONDS = 2.0
 
 FALLBACK_MESSAGE = "Sorry, I had trouble processing that. Could you rephrase?"
 
-SYSTEM_PROMPT = """You are FinAlly, an AI trading assistant embedded in a simulated \
+SYSTEM_PROMPT = """You are TradeAlly, an AI trading assistant embedded in a simulated \
 trading workstation. The user trades a virtual $10,000 portfolio; there is no real money \
 at stake.
 
@@ -191,6 +191,6 @@ def mock_complete(user_message: str) -> dict:
     elif watchlist_changes:
         message = f"[mock] Applying {len(watchlist_changes)} watchlist change(s)."
     else:
-        message = f"[mock] FinAlly received: {user_message}"
+        message = f"[mock] TradeAlly received: {user_message}"
 
     return {"message": message, "trades": trades, "watchlist_changes": watchlist_changes}

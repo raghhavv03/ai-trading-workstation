@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    Stop FinAlly (Windows). Safe to run repeatedly.
+    Stop TradeAlly (Windows). Safe to run repeatedly.
 .DESCRIPTION
-    The `finally-data` volume is deliberately left intact, so your portfolio,
+    The `tradeally-data` volume is deliberately left intact, so your portfolio,
     trades, and chat history survive a stop/start cycle.
 #>
 
@@ -19,4 +19,4 @@ if ($LASTEXITCODE -ne 0) {
 docker compose down
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Write-Host "FinAlly stopped. Your data volume (finally-data) was preserved."
+Write-Host "TradeAlly stopped. Your data volume (tradeally-data) was preserved."

@@ -1,4 +1,4 @@
-# FinAlly Project - the Finance Ally
+# TradeAlly Project - the Trading Ally
 
 All project documentation is in the `planning` directory.
 

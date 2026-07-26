@@ -129,6 +129,6 @@ export async function fillPriceFromToast(page: Page, pattern: RegExp): Promise<n
 }
 
 export async function sendChat(page: Page, message: string): Promise<void> {
-  await page.getByLabel('Message FinAlly').fill(message);
+  await page.getByLabel('Message TradeAlly').fill(message);
   await page.getByRole('button', { name: 'Send', exact: true }).click();
 }

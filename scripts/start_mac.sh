@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start FinAlly (macOS / Linux). Safe to run repeatedly.
+# Start TradeAlly (macOS / Linux). Safe to run repeatedly.
 #
 #   ./scripts/start_mac.sh            # build if needed, start, open browser
 #   ./scripts/start_mac.sh --build    # force a rebuild first
@@ -37,8 +37,8 @@ if [ ! -f .env ]; then
   cp .env.example .env
 fi
 
-if [ "$FORCE_BUILD" = true ] || [ -z "$(docker compose images -q finally 2>/dev/null)" ]; then
-  echo "Building the FinAlly image..."
+if [ "$FORCE_BUILD" = true ] || [ -z "$(docker compose images -q tradeally 2>/dev/null)" ]; then
+  echo "Building the TradeAlly image..."
   docker compose build
 fi
 
@@ -46,7 +46,7 @@ docker compose up -d
 
 URL="http://localhost:8000"
 echo ""
-echo "FinAlly is starting at ${URL}"
+echo "TradeAlly is starting at ${URL}"
 echo "  logs:  docker compose logs -f"
 echo "  stop:  ./scripts/stop_mac.sh"
 

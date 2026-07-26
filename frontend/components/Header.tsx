@@ -31,7 +31,7 @@ export function Header({
   return (
     <header className="flex shrink-0 items-center justify-between gap-6 border-b border-term-border bg-term-elev px-4 py-2">
       <div className="flex items-baseline gap-2">
-        <span className="text-lg font-bold tracking-tight text-accent">FinAlly</span>
+        <span className="text-lg font-bold tracking-tight text-accent">TradeAlly</span>
         <span className="hidden text-[10px] uppercase tracking-[0.2em] text-term-muted lg:inline">
           AI Trading Workstation
         </span>

@@ -9,7 +9,7 @@ from app.main import app, serve_frontend
 def static_root(tmp_path, monkeypatch):
     root = tmp_path / "static"
     (root / "_next").mkdir(parents=True)
-    (root / "index.html").write_text("<html>FinAlly</html>")
+    (root / "index.html").write_text("<html>TradeAlly</html>")
     (root / "_next" / "app.js").write_text("console.log('hi')")
     monkeypatch.setenv("STATIC_DIR", str(root))
     return root
@@ -61,4 +61,4 @@ def test_real_api_routes_still_win_over_the_catch_all(static_root):
         # An unmatched API path must 404, not silently return the SPA shell.
         unknown = client.get("/api/nope")
         assert unknown.status_code == 404
-        assert "FinAlly</html>" not in unknown.text
+        assert "TradeAlly</html>" not in unknown.text

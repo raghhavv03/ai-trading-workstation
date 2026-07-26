@@ -26,7 +26,7 @@ test.describe('AI chat (mocked LLM)', () => {
       /how is my portfolio doing/,
     );
     await expect(page.getByTestId('chat-message-assistant')).toHaveText(
-      /\[mock\] FinAlly received: how is my portfolio doing/,
+      /\[mock\] TradeAlly received: how is my portfolio doing/,
     );
     await expect(page.getByTestId('chat-actions')).toHaveCount(0);
   });
@@ -43,7 +43,7 @@ test.describe('AI chat (mocked LLM)', () => {
     await sendChat(page, 'thinking test');
 
     await expect(page.getByTestId('chat-loading')).toBeVisible();
-    await expect(page.getByLabel('Message FinAlly')).toBeDisabled();
+    await expect(page.getByLabel('Message TradeAlly')).toBeDisabled();
     await expect(page.getByTestId('chat-loading')).toHaveCount(0, { timeout: 30_000 });
     await expect(page.getByTestId('chat-message-assistant')).toHaveCount(1);
   });
@@ -104,7 +104,7 @@ test.describe('AI chat (mocked LLM)', () => {
 
     await expect(page.getByTestId('chat-message-user')).toHaveText(/remember this line/);
     await expect(page.getByTestId('chat-message-assistant')).toHaveText(
-      /\[mock\] FinAlly received: remember this line/,
+      /\[mock\] TradeAlly received: remember this line/,
     );
   });
 });

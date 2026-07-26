@@ -1,10 +1,10 @@
-# FinAlly — AI Trading Workstation
+# TradeAlly — AI Trading Workstation
 
 ## Project Specification
 
 ## 1. Vision
 
-FinAlly (Finance Ally) is a visually stunning AI-powered trading workstation that streams live market data, lets users trade a simulated portfolio, and integrates an LLM chat assistant that can analyze positions and execute trades on the user's behalf. It looks and feels like a modern Bloomberg terminal with an AI copilot.
+TradeAlly (Trading Ally) is a visually stunning AI-powered trading workstation that streams live market data, lets users trade a simulated portfolio, and integrates an LLM chat assistant that can analyze positions and execute trades on the user's behalf. It looks and feels like a modern Bloomberg terminal with an AI copilot.
 
 This is the capstone project for an agentic AI coding course. It is built entirely by Coding Agents demonstrating how orchestrated AI agents can produce a production-quality full-stack application. Agents interact through files in `planning/`.
 
@@ -64,7 +64,7 @@ The user runs a single Docker command (or a provided start script). A browser op
 
 - **Frontend**: Next.js with TypeScript, built as a static export (`output: 'export'`), served by FastAPI as static files
 - **Backend**: FastAPI (Python), managed as a `uv` project
-- **Database**: SQLite, single file at `db/finally.db`, volume-mounted for persistence
+- **Database**: SQLite, single file at `db/tradeally.db`, volume-mounted for persistence
 - **Real-time data**: Server-Sent Events (SSE) — simpler than WebSockets, one-way server→client push, works everywhere
 - **AI integration**: Local Ollama (`qwen3:8b`), with structured outputs for trade execution
 - **Market data**: Environment-variable driven — simulator by default, real data via Massive API if key provided
@@ -85,7 +85,7 @@ The user runs a single Docker command (or a provided start script). A browser op
 ## 4. Directory Structure
 
 ```
-finally/
+tradeally/
 ├── frontend/                 # Next.js TypeScript project (static export)
 ├── backend/                  # FastAPI uv project (Python)
 │   └── db/                   # Schema definitions, seed data, migration logic
@@ -99,7 +99,7 @@ finally/
 │   └── stop_windows.ps1      # Stop Docker container (Windows PowerShell)
 ├── test/                     # Playwright E2E tests + docker-compose.test.yml
 ├── db/                       # Volume mount target (SQLite file lives here at runtime)
-│   └── .gitkeep              # Directory exists in repo; finally.db is gitignored
+│   └── .gitkeep              # Directory exists in repo; tradeally.db is gitignored
 ├── Dockerfile                # Multi-stage build (Node → Python)
 ├── docker-compose.yml        # Canonical run config (port, volume, env-file); start/stop scripts wrap this rather than raw `docker run`
 ├── .env                      # Environment variables (gitignored, .env.example committed)
@@ -111,7 +111,7 @@ finally/
 - **`frontend/`** is a self-contained Next.js project. It knows nothing about Python. It talks to the backend via `/api/*` endpoints and `/api/stream/*` SSE endpoints. Internal structure is up to the Frontend Engineer agent.
 - **`backend/`** is a self-contained uv project with its own `pyproject.toml`. It owns all server logic including database initialization, schema, seed data, API routes, SSE streaming, market data, and LLM integration. Internal structure is up to the Backend/Market Data agents.
 - **`backend/db/`** contains schema SQL definitions and seed logic. The backend lazily initializes the database on first request — creating tables and seeding default data if the SQLite file doesn't exist or is empty.
-- **`db/`** at the top level is the runtime volume mount point. The SQLite file (`db/finally.db`) is created here by the backend and persists across container restarts via Docker volume.
+- **`db/`** at the top level is the runtime volume mount point. The SQLite file (`db/tradeally.db`) is created here by the backend and persists across container restarts via Docker volume.
 - **`planning/`** contains project-wide documentation, including this plan. All agents reference files here as the shared contract.
 - **`test/`** contains Playwright E2E tests and supporting infrastructure (e.g., `docker-compose.test.yml`). Unit tests live within `frontend/` and `backend/` respectively, following each framework's conventions.
 - **`scripts/`** contains start/stop scripts that wrap Docker commands.
@@ -348,7 +348,7 @@ If a trade fails validation (e.g., insufficient cash), the error is included in 
 
 ### System Prompt Guidance
 
-The LLM should be prompted as "FinAlly, an AI trading assistant" with instructions to:
+The LLM should be prompted as "TradeAlly, an AI trading assistant" with instructions to:
 - Analyze portfolio composition, risk concentration, and P&L
 - Suggest trades with reasoning
 - Execute trades when the user asks or agrees
@@ -416,16 +416,16 @@ The SQLite database persists via a named Docker volume, declared once in `docker
 
 ```yaml
 services:
-  finally:
+  tradeally:
     build: .
     ports: ["8000:8000"]
-    volumes: ["finally-data:/app/db"]
+    volumes: ["tradeally-data:/app/db"]
     env_file: .env
 volumes:
-  finally-data:
+  tradeally-data:
 ```
 
-The `db/` directory in the project root maps to `/app/db` in the container. The backend writes `finally.db` to this path.
+The `db/` directory in the project root maps to `/app/db` in the container. The backend writes `tradeally.db` to this path.
 
 ### Start/Stop Scripts
 
@@ -492,5 +492,5 @@ Common first-run issues for students using the same start script:
 | Chat always returns the fallback "Sorry, I had trouble processing that" message | Ollama isn't running, wrong `OLLAMA_BASE_URL`, or `qwen3:8b` isn't pulled | Check `GET /api/health` for `ollama: "unreachable"`; run `ollama serve` and `ollama pull qwen3:8b` |
 | Chat is very slow / spinner runs close to a minute | Local hardware is slow for an 8B model | Expected on modest hardware; requests time out after `OLLAMA_TIMEOUT_SECONDS` (default 60s) rather than hanging forever |
 | `docker compose up` fails with a port conflict | Something else is already bound to port 8000 | Stop the other process, or change the host port mapping in `docker-compose.yml` |
-| Fresh container shows old/broken data after a schema change | Stale SQLite file in the `finally-data` volume from a previous version | Use `POST /api/system/reset` for a soft reset, or remove the volume (`docker volume rm finally-data`) for a hard reset — this deletes all portfolio history |
+| Fresh container shows old/broken data after a schema change | Stale SQLite file in the `tradeally-data` volume from a previous version | Use `POST /api/system/reset` for a soft reset, or remove the volume (`docker volume rm tradeally-data`) for a hard reset — this deletes all portfolio history |
 | Watchlist add silently fails | Ticker fails the `^[A-Z0-9]{1,5}$` format check, or the 30-ticker cap is reached | Check the API error message returned by `POST /api/watchlist` |

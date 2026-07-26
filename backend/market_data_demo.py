@@ -45,7 +45,7 @@ def sparkline(values: deque[float]) -> str:
 
 
 def render(url: str, prices: dict[str, dict], log: deque[str]) -> str:
-    lines = [CLEAR, f"FinAlly market data demo -- {url}  (Ctrl+C to quit)", ""]
+    lines = [CLEAR, f"TradeAlly market data demo -- {url}  (Ctrl+C to quit)", ""]
     lines.append(f"{'TICKER':<8}{'PRICE':>10}  {'':<1} SPARKLINE")
     lines.append("-" * 60)
     for ticker in sorted(prices):

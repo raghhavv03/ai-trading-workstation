@@ -101,7 +101,7 @@ export function ChatPanel({ messages, pending, collapsed, onToggle, onSend }: Ch
       <div ref={scroller} className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3">
         {messages.length === 0 && !pending && (
           <p className="text-xs leading-relaxed text-term-muted">
-            Ask FinAlly about your portfolio, request analysis, or tell it to trade — e.g.{' '}
+            Ask TradeAlly about your portfolio, request analysis, or tell it to trade — e.g.{' '}
             <span className="text-accent">&ldquo;buy 5 shares of NVDA&rdquo;</span>.
           </p>
         )}
@@ -113,7 +113,7 @@ export function ChatPanel({ messages, pending, collapsed, onToggle, onSend }: Ch
             className={message.role === 'user' ? 'self-end text-right' : ''}
           >
             <span className="text-[9px] uppercase tracking-[0.18em] text-term-muted">
-              {message.role === 'user' ? 'You' : 'FinAlly'}
+              {message.role === 'user' ? 'You' : 'TradeAlly'}
             </span>
             <div
               className={`mt-0.5 whitespace-pre-wrap rounded px-2.5 py-1.5 text-xs leading-relaxed ${
@@ -131,14 +131,14 @@ export function ChatPanel({ messages, pending, collapsed, onToggle, onSend }: Ch
         {pending && (
           <div data-testid="chat-loading" className="flex items-center gap-2 text-xs text-term-muted">
             <span className="h-1.5 w-1.5 rounded-full bg-accent pulse-dot" />
-            FinAlly is thinking…
+            TradeAlly is thinking…
           </div>
         )}
       </div>
 
       <form onSubmit={submit} className="flex shrink-0 gap-2 border-t border-term-border p-2">
         <input
-          aria-label="Message FinAlly"
+          aria-label="Message TradeAlly"
           placeholder="Ask or instruct…"
           value={draft}
           onChange={(event) => setDraft(event.target.value)}

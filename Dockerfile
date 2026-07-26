@@ -37,7 +37,7 @@ COPY --from=frontend /build/out ./static
 
 # Volume mount target; DB_PATH points the backend at it so data survives restarts.
 ENV PATH="/app/backend/.venv/bin:$PATH" \
-    DB_PATH=/app/db/finally.db \
+    DB_PATH=/app/db/tradeally.db \
     STATIC_DIR=/app/backend/static
 
 EXPOSE 8000

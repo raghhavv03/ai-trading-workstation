@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Stop FinAlly (macOS / Linux). Safe to run repeatedly.
+# Stop TradeAlly (macOS / Linux). Safe to run repeatedly.
 #
-# The `finally-data` volume is deliberately left intact, so your portfolio,
+# The `tradeally-data` volume is deliberately left intact, so your portfolio,
 # trades, and chat history survive a stop/start cycle.
 
 set -euo pipefail
@@ -15,4 +15,4 @@ fi
 
 docker compose down
 
-echo "FinAlly stopped. Your data volume (finally-data) was preserved."
+echo "TradeAlly stopped. Your data volume (tradeally-data) was preserved."

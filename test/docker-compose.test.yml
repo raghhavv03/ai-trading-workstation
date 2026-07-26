@@ -3,7 +3,7 @@
 #
 #   docker compose -f test/docker-compose.test.yml up --build \
 #     --abort-on-container-exit --exit-code-from playwright
-name: finally-e2e
+name: tradeally-e2e
 
 services:
   app:
@@ -17,7 +17,7 @@ services:
       # market simulator and the mock LLM drive every run.
       LLM_MOCK: "true"
       MASSIVE_API_KEY: ""
-      DB_PATH: /app/db/finally.db
+      DB_PATH: /app/db/tradeally.db
     # tmpfs rather than a named volume: every run starts from a genuinely fresh
     # database, so the "fresh start" scenario tests what it claims to.
     tmpfs:

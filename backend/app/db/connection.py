@@ -8,7 +8,7 @@ from pathlib import Path
 import aiosqlite
 
 SCHEMA_PATH = Path(__file__).parent / "schema.sql"
-DEFAULT_DB_PATH = "data/finally.db"
+DEFAULT_DB_PATH = "data/tradeally.db"
 DEFAULT_USER_ID = "default"
 DEFAULT_CASH_BALANCE = 10000.0
 DEFAULT_WATCHLIST = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "NVDA", "META", "JPM", "V", "NFLX"]
