@@ -45,7 +45,7 @@ def sparkline(values: deque[float]) -> str:
 
 
 def render(url: str, prices: dict[str, dict], log: deque[str]) -> str:
-    lines = [CLEAR, f"FinAlly market data demo -- {url}  (Ctrl+C to quit)", ""]
+    lines = [CLEAR, f"TradeAlly market data demo -- {url}  (Ctrl+C to quit)", ""]
     lines.append(f"{'TICKER':<8}{'PRICE':>10}  {'':<1} SPARKLINE")
     lines.append("-" * 60)
     for ticker in sorted(prices):
@@ -54,7 +54,9 @@ def render(url: str, prices: dict[str, dict], log: deque[str]) -> str:
         color = GREEN if direction == "up" else RED if direction == "down" else DIM
         arrow = "▲" if direction == "up" else "▼" if direction == "down" else "•"
         spark = sparkline(row["history"])
-        lines.append(f"{ticker:<8}{row['price']:>10.2f}  {color}{arrow}{RESET} {color}{spark}{RESET}")
+        lines.append(
+            f"{ticker:<8}{row['price']:>10.2f}  {color}{arrow}{RESET} {color}{spark}{RESET}"
+        )
     lines.append("")
     lines.append(f"Event log (last {LOG_LEN}):")
     lines.append("-" * 60)
@@ -92,8 +94,12 @@ def main() -> int:
                 row["history"].append(tick["price"])
 
                 ts = tick["timestamp"].split("T")[1][:8]
-                arrow = "^" if tick["direction"] == "up" else "v" if tick["direction"] == "down" else "-"
-                log.append(f"{ts}  {ticker:<6} {arrow} {tick['previous_price']:.2f} -> {tick['price']:.2f}")
+                direction = tick["direction"]
+                arrow = "^" if direction == "up" else "v" if direction == "down" else "-"
+                log.append(
+                    f"{ts}  {ticker:<6} {arrow} "
+                    f"{tick['previous_price']:.2f} -> {tick['price']:.2f}"
+                )
 
                 now = time.monotonic()
                 if now - last_draw >= REDRAW_INTERVAL_SECONDS:

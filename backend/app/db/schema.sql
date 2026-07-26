@@ -31,3 +31,25 @@ CREATE TABLE IF NOT EXISTS trades (
     price REAL NOT NULL,
     executed_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS portfolio_snapshots (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL DEFAULT 'default',
+    total_value REAL NOT NULL,
+    recorded_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_portfolio_snapshots_user_recorded
+    ON portfolio_snapshots (user_id, recorded_at);
+
+CREATE TABLE IF NOT EXISTS chat_messages (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL DEFAULT 'default',
+    role TEXT NOT NULL,
+    content TEXT NOT NULL,
+    actions TEXT,
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_chat_messages_user_created
+    ON chat_messages (user_id, created_at);

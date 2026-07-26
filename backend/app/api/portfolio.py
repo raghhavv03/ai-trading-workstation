@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 import aiosqlite
 from fastapi import APIRouter, Depends, HTTPException
 
+from ..db import queries
 from ..deps import get_cache, get_db, get_registry
 from ..market_data.cache import PriceCache
 from ..market_data.tracked_tickers import TrackedTickerRegistry
@@ -30,11 +31,12 @@ async def _get_position(db: aiosqlite.Connection, ticker: str) -> aiosqlite.Row 
     return rows[0] if rows else None
 
 
-@router.get("/portfolio")
-async def get_portfolio(
-    db: aiosqlite.Connection = Depends(get_db),
-    cache: PriceCache = Depends(get_cache),
-):
+async def load_portfolio(
+    db: aiosqlite.Connection, cache: PriceCache
+) -> tuple[float, list[dict], float]:
+    """Single source of truth for portfolio valuation, shared by the REST route,
+    the periodic snapshot task, and the LLM chat context. Values are unrounded
+    here -- rounding is applied at serialization time only (PLAN.md §7)."""
     cash_balance = await _get_cash_balance(db)
     rows = await db.execute_fetchall(
         "SELECT ticker, quantity, avg_cost FROM positions WHERE user_id = ?", (DEFAULT_USER_ID,)
@@ -50,19 +52,55 @@ async def get_portfolio(
         positions.append(
             {
                 "ticker": ticker,
-                "quantity": round(quantity, 4),
-                "avg_cost": round(avg_cost, 2),
-                "current_price": round(current_price, 2),
-                "market_value": round(market_value, 2),
-                "unrealized_pnl": round(market_value - quantity * avg_cost, 2),
+                "quantity": quantity,
+                "avg_cost": avg_cost,
+                "current_price": current_price,
+                "market_value": market_value,
+                "unrealized_pnl": market_value - quantity * avg_cost,
             }
         )
 
+    return cash_balance, positions, total_value
+
+
+def serialize_position(position: dict) -> dict:
+    return {
+        "ticker": position["ticker"],
+        "quantity": round(position["quantity"], 4),
+        "avg_cost": round(position["avg_cost"], 2),
+        "current_price": round(position["current_price"], 2),
+        "market_value": round(position["market_value"], 2),
+        "unrealized_pnl": round(position["unrealized_pnl"], 2),
+    }
+
+
+async def record_snapshot(db: aiosqlite.Connection, cache: PriceCache) -> None:
+    _, _, total_value = await load_portfolio(db, cache)
+    await queries.insert_portfolio_snapshot(
+        db, DEFAULT_USER_ID, total_value, datetime.now(timezone.utc).isoformat()
+    )
+
+
+@router.get("/portfolio")
+async def get_portfolio(
+    db: aiosqlite.Connection = Depends(get_db),
+    cache: PriceCache = Depends(get_cache),
+):
+    cash_balance, positions, total_value = await load_portfolio(db, cache)
     return {
         "cash_balance": round(cash_balance, 2),
-        "positions": positions,
+        "positions": [serialize_position(p) for p in positions],
         "total_value": round(total_value, 2),
     }
+
+
+@router.get("/portfolio/history")
+async def get_portfolio_history(db: aiosqlite.Connection = Depends(get_db)):
+    rows = await queries.get_portfolio_history(db, DEFAULT_USER_ID)
+    return [
+        {"total_value": round(row["total_value"], 2), "recorded_at": row["recorded_at"]}
+        for row in rows
+    ]
 
 
 @router.post("/portfolio/trade")
@@ -140,6 +178,10 @@ async def execute_trade(
     # Write-through: a fresh buy (0 -> >0) must start streaming even if never
     # watchlisted; a full sell-out (>0 -> 0) of an unwatched ticker stops it.
     registry.set_position_ticker(ticker, new_quantity)
+
+    # Snapshot immediately so the P&L chart shows the step change at the fill,
+    # rather than waiting up to 60s for the periodic task (PLAN.md §7).
+    await record_snapshot(db, cache)
 
     return {
         "ticker": ticker,

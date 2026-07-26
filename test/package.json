@@ -1,0 +1,15 @@
+{
+  "name": "tradeally-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Playwright end-to-end tests for the TradeAlly trading workstation",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report",
+    "docker": "docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from playwright"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1"
+  }
+}

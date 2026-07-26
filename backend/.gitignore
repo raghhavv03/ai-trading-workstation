@@ -2,3 +2,6 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Next.js export copied in by the Dockerfile (and by hand for local integration runs)
+static/

@@ -1,0 +1,31 @@
+.git
+.github
+.claude
+.DS_Store
+**/.DS_Store
+
+# Never ship the host virtualenv or caches — they are platform-specific
+backend/.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+**/*.egg-info
+
+# Host-side runtime data; the container writes to the mounted volume instead
+db/*.db
+db/*.db-journal
+backend/data
+
+frontend/node_modules
+frontend/.next
+frontend/out
+
+planning
+test
+scripts
+deploy
+.env
+.env.local
+Dockerfile
+docker-compose.yml

@@ -1,0 +1,105 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-term-bg: #0d1117;
+  --color-term-panel: #141b26;
+  --color-term-elev: #1a1a2e;
+  --color-term-row: #1b2432;
+  --color-term-border: #2a3444;
+  --color-term-muted: #7d8da3;
+  --color-term-text: #d5dee9;
+
+  --color-accent: #ecad0a;
+  --color-primary: #209dd7;
+  --color-secondary: #753991;
+
+  --color-up: #2ea56f;
+  --color-down: #e0484d;
+  --color-flat: #7d8da3;
+
+  --font-mono:
+    ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Monaco, 'Cascadia Mono', monospace;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-term-bg);
+  color: var(--color-term-text);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Price flash: a saturated tint applied on tick, then transitioned out over
+   ~500ms. `background-color` is set instantly by the keyframe's 0% stop and
+   decays from there, so consecutive ticks re-trigger cleanly. */
+@keyframes flash-up {
+  0% {
+    background-color: color-mix(in srgb, var(--color-up) 45%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes flash-down {
+  0% {
+    background-color: color-mix(in srgb, var(--color-down) 45%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.flash-up {
+  animation: flash-up 500ms ease-out;
+}
+
+.flash-down {
+  animation: flash-down 500ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-up,
+  .flash-down {
+    animation: none;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+/* Terminal-style scrollbars — thin, muted, no light-mode default chrome. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-term-border) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-term-border);
+  border-radius: 4px;
+}
